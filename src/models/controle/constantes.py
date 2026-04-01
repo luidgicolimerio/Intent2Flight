@@ -6,13 +6,13 @@ BASE_URL_MOVEMENT = "http://localhost:8001/movement"
 BASE_URL_TELEMETRY = "http://localhost:8001/telemetry"
 MCP_URL = "http://localhost:8001/mcp"
 
-ROTAS_INICIAIS = ["arm", "takeoff", "go_to_ned", "rtl"]
+ROTAS_INICIAIS = ["encerrar", "arm_and_takeoff", "go_to_ned", "rtl"]
 
 DESCRICAO_ROTAS = {
-    "arm": "\"arm\" se o usuário quer armar o drone",
-    "takeoff": "\"takeoff\" se o usuário quer decolar, com ou sem altitude especificada",
+    "arm_and_takeoff": "\"arm_and_takeoff\" se o usuário quer armar e decolar o drone, com ou sem altitude especificada",
     "go_to_ned": "\"go_to_ned\" se o usuário quer mover o drone para uma posição NED (norte, leste, baixo)",
-    "rtl": "\"rtl\" se o usuário quer encerrar, pousar o drone e retornar ao ponto de partida",
+    "rtl": "\"rtl\" se o usuário quer pousar e retornar ao ponto de partida",
+    "encerrar": "\"encerrar\" se o usuário quer explicitamente finalizar ou encerrar a missão",
 }
 
 _jinja = Environment(loader=FileSystemLoader(Path(__file__).parent / "prompts"), trim_blocks=True, lstrip_blocks=True)

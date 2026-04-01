@@ -10,6 +10,7 @@ class SituacaoDrone(TypedDict):
     vel_y: float
     vel_z: float
     rotas_disponiveis: list[str]
+    no_ar: bool
 
 
 class Estado(TypedDict):
