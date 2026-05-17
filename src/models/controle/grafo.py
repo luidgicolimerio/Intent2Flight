@@ -1,5 +1,4 @@
 from langgraph.graph import END, START, StateGraph
-from langgraph.checkpoint.memory import MemorySaver
 from .estado import Estado
 from .nos import receber_comando, tratar_comando, executa_comando, busca_situacao, rotear
 
@@ -19,6 +18,6 @@ def construir_grafo() -> StateGraph:
         "executa_comando": "executa_comando",
         "END": END,
     })
-    workflow.add_edge("executa_comando", "receber_comando")
+    workflow.add_edge("executa_comando", END)
 
-    return workflow.compile(checkpointer=MemorySaver())
+    return workflow.compile()

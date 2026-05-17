@@ -1,5 +1,12 @@
 from pathlib import Path
-from jinja2 import Environment, FileSystemLoader
+from dotenv import load_dotenv
+from jinja2 import Template
+from langfuse import Langfuse
+
+load_dotenv()
+langfuse = Langfuse()
+
+_PROMPTS_DIR = Path(__file__).parent / "prompts"
 
 BASE_URL_COMMAND = "http://localhost:8001/command"
 BASE_URL_MOVEMENT = "http://localhost:8001/movement"
@@ -15,19 +22,18 @@ DESCRICAO_ROTAS = {
     "encerrar": "\"encerrar\" se o usuário quer explicitamente finalizar ou encerrar a missão",
 }
 
-_jinja = Environment(loader=FileSystemLoader(Path(__file__).parent / "prompts"), trim_blocks=True, lstrip_blocks=True)
-
-
 def montar_system_piloto(situacao: dict) -> str:
-    return _jinja.get_template("piloto.jinja2").render(
+    template = Template((_PROMPTS_DIR / "piloto.jinja2").read_text())
+    return template.render(
         pos_x=situacao.get("pos_x", 0.0),
         pos_y=situacao.get("pos_y", 0.0),
         pos_z=situacao.get("pos_z", 0.0),
     )
 
-
 def montar_system_roteamento(rotas_disponiveis: list[str]) -> str:
-    return _jinja.get_template("roteamento.jinja2").render(
-        rotas=[r for r in rotas_disponiveis if r in DESCRICAO_ROTAS],
+    template = Template((_PROMPTS_DIR / "roteamento.jinja2").read_text())
+    rotas_filtradas = [r for r in rotas_disponiveis if r in DESCRICAO_ROTAS]
+    return template.render(
+        rotas=rotas_filtradas,
         descricao_rotas=DESCRICAO_ROTAS,
     )

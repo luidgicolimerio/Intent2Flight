@@ -4,6 +4,7 @@ from langchain_groq import ChatGroq
 load_dotenv()
 
 llm = ChatGroq(model="openai/gpt-oss-120b")
+# llm = ChatGroq(model="llama-3.3-70b-versatile")
 
 
 # from langchain_ollama import ChatOllama

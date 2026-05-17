@@ -9,7 +9,8 @@ def busca_situacao(estado: Estado) -> dict:
     print("[busca_situacao] Buscando telemetria NED...")
     try:
         resposta = asyncio.run(agente_telemetria(MCP_URL))
-        situacao_atual = estado["situacao"]
+        from ..constantes import ROTAS_INICIAIS
+        situacao_atual = estado.get("situacao") or {}
         for msg in resposta["messages"]:
             content = getattr(msg, "content", "")
             if not isinstance(content, list):
@@ -26,7 +27,8 @@ def busca_situacao(estado: Estado) -> dict:
                     print(f"[busca_situacao] Posição: x={pos.get('x')}, y={pos.get('y')}, z={pos.get('z')}")
                     return {
                         "situacao": {
-                            **situacao_atual,
+                            "rotas_disponiveis": situacao_atual.get("rotas_disponiveis", ROTAS_INICIAIS),
+                            "no_ar": situacao_atual.get("no_ar", False),
                             "pos_x": pos.get("x", situacao_atual.get("pos_x", 0.0)),
                             "pos_y": pos.get("y", situacao_atual.get("pos_y", 0.0)),
                             "pos_z": pos.get("z", situacao_atual.get("pos_z", 0.0)),
@@ -39,4 +41,4 @@ def busca_situacao(estado: Estado) -> dict:
                     continue
     except Exception as e:
         print(f"[busca_situacao] Erro ao buscar telemetria: {e}")
-    return {}
+    return {"situacao": estado["situacao"]}
