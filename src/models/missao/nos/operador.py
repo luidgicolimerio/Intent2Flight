@@ -1,6 +1,7 @@
 from ..estado import EstadoMissao
 from ..agentes import agente_operador
 from src.models.controle.grafo import construir_grafo as construir_grafo_controle
+from src.utils import langfuse_handler
 
 _grafo_controle = construir_grafo_controle()
 
@@ -13,7 +14,7 @@ async def operador(state: EstadoMissao) -> dict:
     comando_ativo = fila[0]
     instrucao = await agente_operador(comando_ativo)
     try:
-        await _grafo_controle.ainvoke({"comando": instrucao})
+        await _grafo_controle.ainvoke({"comando": instrucao}, config={"callbacks": [langfuse_handler]})
         return {"plano_de_voo": fila[1:], "comando_ativo": None}
     except Exception as e:
         print(f"[operador] Erro ao executar comando: {e}")
