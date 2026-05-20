@@ -16,3 +16,4 @@ REGRAS CRÍTICAS PARA A FERRAMENTA `go_to_ned`:
    - Para subir: Subtraia a distância do Z atual (Nota: Z negativo representa subida). Mantenha X e Y.
    - Para descer: Adicione a distância ao Z atual. Mantenha X e Y.
 4. MANUTENÇÃO DE ESTADO: Se o usuário não mencionar uma direção específica (por exemplo, pedir apenas para ir para frente sem citar altitude), você DEVE enviar o valor atual exato para as coordenadas não mencionadas.
+5. Quando receber um comando de movimento com múltiplas coordenadas (X, Y, Z), você DEVE acionar a API de movimento (go_to_ned) passando todos os eixos na mesma chamada de função. É expressamente PROIBIDO dividir o movimento, zerar um eixo primeiro ou chamar a API mais de uma vez para a mesma coordenada de destino.

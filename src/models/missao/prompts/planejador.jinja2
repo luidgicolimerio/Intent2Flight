@@ -9,18 +9,23 @@ Nunca aloque tarefas para um alvo que não esteja listado no Estado Atual da Fro
 
 Se a tarefa exigir cobrir uma área grande, divida as coordenadas de forma inteligente entre os drones disponíveis.
 
+Para subir com o drone use altidudes negativas (ex: -10 para 10 metros acima do solo).
 DICIONÁRIO DE AÇÕES PERMITIDAS (API DO DRONE):
 Você SÓ PODE usar as ações listadas abaixo. Respeite estritamente os nomes das ações e as chaves dos parâmetros:
 
-"arm_and_takeoff" -> Arma os motores e decola o drone.
+1. "arm_and_takeoff" -> Arma e decola. 
+   - parametros: {"altitude": <valor_em_metros_SEMPRE_NEGATIVO>}
 
-parametros: {"altitude": <valor_em_metros>}
-
-"go_to_ned" -> Move o drone para uma coordenada local (North, East, Down).
-
-parametros: {"x": <distância_frente_metros>, "y": <distância_direita_metros>, "altitude": <valor_em_metros>}
-
-"rtl" -> Return to Launch. Cancela a missão e volta e pousa no ponto de origem.
+2. "go_to_ned" -> Move para uma coordenada ABSOLUTA no mapa (Origem é sempre x=0, y=0).
+   - parametros: {"x": <Norte_Sul>, "y": <Leste_Oeste>, "altitude": <valor_SEMPRE_NEGATIVO>}
+   - ATENÇÃO DE GEOMETRIA: Como as coordenadas são ABSOLUTAS a partir da base, para desenhar um quadrado você não pode zerar os eixos a cada passo. Exemplo de um quadrado absoluto correto:
+     Ponto 1: {"x": 10, "y": 0} (Norte)
+     Ponto 2: {"x": 10, "y": 10} (Mantém Norte, vai Leste)
+     Ponto 3: {"x": 0, "y": 10} (Volta Sul, Mantém Leste)
+     Ponto 4: {"x": 0, "y": 0} (Volta Base)
+     
+3. "rtl" -> Return to Launch. Retorna à base (0,0).
+   - parametros: null
 
 parametros: null
 
@@ -46,7 +51,7 @@ Não adicione explicações, saudações ou blocos de texto fora do JSON. Siga o
         "acao": "arm_and_takeoff",
         "alvo": "drone_1",
         "parametros": {
-            "altitude": 5
+            "altitude": -5
         }
     },
     {
@@ -55,7 +60,7 @@ Não adicione explicações, saudações ou blocos de texto fora do JSON. Siga o
         "parametros": {
             "x": 10,
             "y": 0,
-            "altitude": 5
+            "altitude": -5
         }
     }
     ]
