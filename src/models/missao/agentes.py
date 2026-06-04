@@ -41,7 +41,8 @@ async def agente_auditor(plano_de_voo: list[dict], situacao_frota: dict) -> dict
     resposta = await llm.ainvoke([SystemMessage(content=system),
                                   AIMessage(content="```json"),
                                   HumanMessage(content="Avalie o plano.")],
-                                  config={"callbacks": [langfuse_handler]})
+                                  config={"callbacks": [langfuse_handler]},
+                                  stop=["```"])
     return json.loads(resposta.content)
 
 
