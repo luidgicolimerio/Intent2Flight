@@ -19,3 +19,4 @@ class Estado(TypedDict):
     rota: str | None
     resultado_api: dict | None
     situacao: SituacaoDrone
+    mcp_url: str

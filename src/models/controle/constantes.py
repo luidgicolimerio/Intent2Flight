@@ -11,7 +11,6 @@ _PROMPTS_DIR = Path(__file__).parent / "prompts"
 BASE_URL_COMMAND = "http://localhost:8001/command"
 BASE_URL_MOVEMENT = "http://localhost:8001/movement"
 BASE_URL_TELEMETRY = "http://localhost:8001/telemetry"
-MCP_URL = "http://localhost:8001/mcp"
 
 ROTAS_INICIAIS = ["encerrar", "arm_and_takeoff", "go_to_ned", "rtl"]
 

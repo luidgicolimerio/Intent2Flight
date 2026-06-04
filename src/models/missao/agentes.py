@@ -1,7 +1,7 @@
 import json
 from pathlib import Path
 from jinja2 import Environment, FileSystemLoader
-from langchain_core.messages import HumanMessage, SystemMessage
+from langchain_core.messages import HumanMessage, SystemMessage, AIMessage
 from src.config import llm
 from src.utils import langfuse_handler
 
@@ -18,8 +18,10 @@ async def agente_planejador(objetivo_abstrato: str, situacao_frota: dict, feedba
                      objetivo_abstrato=objetivo_abstrato,
                      feedback_auditor=feedback_auditor)
     resposta = await llm.ainvoke([SystemMessage(content=system),
+                                  AIMessage(content="```json"),
                                   HumanMessage(content=objetivo_abstrato)],
-                                  config={"callbacks": [langfuse_handler]})
+                                  config={"callbacks": [langfuse_handler]},
+                                  stop=["```"])
 
     texto_limpo = resposta.content.strip()
 
@@ -37,6 +39,7 @@ async def agente_auditor(plano_de_voo: list[dict], situacao_frota: dict) -> dict
                      plano_de_voo=json.dumps(plano_de_voo, ensure_ascii=False),
                      situacao_frota=situacao_frota)
     resposta = await llm.ainvoke([SystemMessage(content=system),
+                                  AIMessage(content="```json"),
                                   HumanMessage(content="Avalie o plano.")],
                                   config={"callbacks": [langfuse_handler]})
     return json.loads(resposta.content)
