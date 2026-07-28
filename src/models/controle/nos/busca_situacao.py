@@ -2,14 +2,16 @@ import asyncio
 import json
 from langchain_core.runnables import RunnableConfig
 from ..estado import Estado
-from ..constantes import MCP_URL
 from ..agentes import agente_telemetria
 
 
 def busca_situacao(estado: Estado, config: RunnableConfig) -> dict:
     print("[busca_situacao] Buscando telemetria NED...")
+
+    url_mcp_dinamica = estado["mcp_url"] 
+
     try:
-        resposta = asyncio.run(agente_telemetria(MCP_URL, callbacks=config.get("callbacks")))
+        resposta = asyncio.run(agente_telemetria(url_mcp_dinamica, callbacks=config.get("callbacks")))
         from ..constantes import ROTAS_INICIAIS
         situacao_atual = estado.get("situacao") or {}
         for msg in resposta["messages"]:

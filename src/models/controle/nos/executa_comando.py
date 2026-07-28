@@ -3,7 +3,7 @@ from langchain_core.messages import AIMessage
 from langchain_core.runnables import RunnableConfig
 from langchain_core.tools.base import ToolException
 from ..estado import Estado
-from ..constantes import MCP_URL, montar_system_piloto
+from ..constantes import montar_system_piloto
 from ..agentes import agente_piloto
 
 
@@ -11,9 +11,12 @@ def executa_comando(estado: Estado, config: RunnableConfig) -> dict:
     print(f"[executa_comando] Executando rota: '{estado['rota']}' | comando: '{estado['comando']}'")
     rota = estado["rota"]
     sucesso = True
+
+    url_mcp_dinamica = estado["mcp_url"] 
+
     try:
         resposta = asyncio.run(agente_piloto(
-            MCP_URL,
+            url_mcp_dinamica,
             montar_system_piloto(estado["situacao"]),
             rota,
             estado["comando"],

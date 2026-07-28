@@ -29,9 +29,9 @@ async def main():
                 "comando_ativo": None,
                 "situacao_frota": {
                     "drone_1": "disponivel",
-                    "drone_2": "indisponivel",
-                    "drone_3": "indisponivel",
-                    "drone_4": "indisponivel",
+                    "drone_2": "disponivel",
+                    "drone_3": "disponivel",
+                    "drone_4": "disponivel",
                 },
                 "status_missao": None,
                 "feedback_auditor": None,
