@@ -173,9 +173,12 @@ def render_mapa(plano: list[dict]):
     st.iframe(html, height=500)
 
 
-def get_config():
+def get_config(on_instrucao=None):
     return {
-        "configurable": {"thread_id": st.session_state.thread_id},
+        "configurable": {
+            "thread_id": st.session_state.thread_id,
+            "on_instrucao": on_instrucao,
+        },
         "callbacks": [langfuse_handler],
     }
 
@@ -195,8 +198,15 @@ async def invocar_missao(objetivo: str) -> dict:
     )
 
 
-async def retomar_missao() -> dict:
-    return await st.session_state.grafo.ainvoke(None, get_config())
+async def retomar_missao(on_instrucao=None) -> dict:
+    config = get_config(on_instrucao)
+    resultado = None
+    while True:
+        resultado = await st.session_state.grafo.ainvoke(None, config)
+        state = await st.session_state.grafo.aget_state(config)
+        if not state.next:
+            break
+    return resultado
 
 
 # --- LAYOUT ---
@@ -258,22 +268,30 @@ with col_right:
 
             with col_ok:
                 if st.button("✅ Aprovar e Executar", type="primary", use_container_width=True):
-                    with st.chat_message("assistant"):
-                        with st.spinner("Executando missão..."):
-                            try:
-                                resultado = asyncio.run(retomar_missao())
-                                status = resultado.get("status_missao", "desconhecido")
-                                st.session_state.status_missao = status
-                                st.session_state.plano_de_voo = resultado.get("plano_de_voo", [])
-                                st.session_state.frota = resultado.get("situacao_frota", st.session_state.frota)
-                                response = f"✅ Missão executada. Status final: `{status}`"
-                            except Exception as e:
-                                response = f"❌ Erro na execução: {e}"
-                                st.session_state.status_missao = "falha"
+                    st.session_state.aguardando_aprovacao = False
+                    with st.spinner("Executando missão..."):
+                        log_placeholder = chat_container.empty()
+                        log_lines = []
 
-                            st.write(response)
-                            st.session_state.messages.append({"role": "assistant", "content": response})
-                            st.session_state.aguardando_aprovacao = False
+                        def on_instrucao(alvo, instrucao):
+                            log_lines.append(f"🤖 **[{alvo}]** {instrucao}")
+                            log_placeholder.markdown("\n\n".join(log_lines))
+
+                        try:
+                            resultado = asyncio.run(retomar_missao(on_instrucao))
+                            status = resultado.get("status_missao", "desconhecido")
+                            st.session_state.status_missao = status
+                            st.session_state.plano_de_voo = resultado.get("plano_de_voo", [])
+                            st.session_state.frota = resultado.get("situacao_frota", st.session_state.frota)
+                            response = f"✅ Missão executada. Status final: `{status}`"
+                        except Exception as e:
+                            response = f"❌ Erro na execução: {e}"
+                            st.session_state.status_missao = "falha"
+
+                        log_placeholder.empty()
+                        for line in log_lines:
+                            st.session_state.messages.append({"role": "assistant", "content": line})
+                        st.session_state.messages.append({"role": "assistant", "content": response})
                     st.rerun()
 
             with col_cancel:
