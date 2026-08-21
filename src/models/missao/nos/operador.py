@@ -26,6 +26,10 @@ async def operador(state: EstadoMissao, config: RunnableConfig) -> dict:
     instrucao = await agente_operador(comando_ativo)
     print(f"\n[Operador] Enviando para {alvo} ({url_do_drone}): {instrucao}")
 
+    on_instrucao = config.get("configurable", {}).get("on_instrucao")
+    if on_instrucao:
+        on_instrucao(alvo, instrucao)
+
     config_filho = {
         "callbacks": config.get("callbacks"),
         "configurable": {"thread_id": str(uuid.uuid4())}

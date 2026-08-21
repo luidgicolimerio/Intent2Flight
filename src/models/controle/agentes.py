@@ -36,7 +36,7 @@ async def agente_piloto(mcp_url: str, system_prompt: str, rota: str, comando: st
     porta = mcp_url.split(":")[-1].replace("/mcp", "")
     nome_servidor = f"uav_{porta}"
     
-    client = MultiServerMCPClient({nome_servidor: {"url": mcp_url, "transport": "http"}})
+    client = MultiServerMCPClient({nome_servidor: {"url": mcp_url, "transport": "http", "timeout": 30}})
     todas_tools = await client.get_tools()
     
     tools_permitidas = TOOLS_POR_ROTA.get(rota, set())

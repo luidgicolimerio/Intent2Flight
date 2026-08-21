@@ -15,7 +15,7 @@ INSTRUÇÕES DE SAÍDA:
 Gere uma única frase imperativa. Seja técnico e cirúrgico. Não adicione saudações, explicações ou redundâncias (ex: não explique o que é Z, apenas passe o valor de Z).
 
 Exemplos de conversão:
-- Se Ação="arm_and_takeoff", Alvo="drone_1", Parâmetros={"altitude": 20} -> "Arme os motores e decole para uma altitude de 20 metros."
+- Se Ação="arm_and_takeoff", Alvo="drone_1", Parâmetros={"altitude": -10} -> "Arme os motores e decole para uma altitude de 10 metros."
 - Se Ação="go_to_ned", Alvo="drone_1", Parâmetros={"x": 50, "y": 100, "z": -20} -> "Vá para as coordenadas NED absolutas: x=50, y=100, z=-20."
 - Se Ação="go_to_ned", Alvo="drone_1", Parâmetros={"x": 10, "y": 0} -> "Vá para as coordenadas NED absolutas: x=10, y=0. Mantenha o valor do eixo Z atual."
 - Se Ação="rtl", Alvo="drone_2" -> "Cancele a missão atual e execute o RTL (Return To Launch)."

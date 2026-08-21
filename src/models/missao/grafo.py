@@ -27,4 +27,5 @@ def construir_grafo() -> StateGraph:
         "END": END,
     })
 
-    return workflow.compile()
+    memory = MemorySaver()
+    return workflow.compile(checkpointer=memory, interrupt_before=["operador"])

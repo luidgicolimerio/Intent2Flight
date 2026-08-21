@@ -22,6 +22,9 @@ def executa_comando(estado: Estado, config: RunnableConfig) -> dict:
             estado["comando"],
             callbacks=config.get("callbacks"),
         ))
+        for msg in resposta["messages"]:
+            if hasattr(msg, "content") and msg.__class__.__name__ == "ToolMessage":
+                print(f"[executa_comando] Resposta da tool: {msg.content}")
         ultima_msg = resposta["messages"][-1].content
     except (ToolException, Exception) as e:
         print(f"[executa_comando] Erro ao executar comando: {e}")
