@@ -17,7 +17,8 @@ def executa_comando(estado: Estado, config: RunnableConfig) -> dict:
     try:
         resposta = asyncio.run(agente_piloto(
             url_mcp_dinamica,
-            montar_system_piloto(estado["situacao"]),
+            estado.get("api_url", ""),
+            montar_system_piloto(estado["situacao"], rota=rota, mcp_url=url_mcp_dinamica, api_url=estado.get("api_url", "")),
             rota,
             estado["comando"],
             callbacks=config.get("callbacks"),

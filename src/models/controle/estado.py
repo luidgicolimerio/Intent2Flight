@@ -20,3 +20,4 @@ class Estado(TypedDict):
     resultado_api: dict | None
     situacao: SituacaoDrone
     mcp_url: str
+    api_url: str

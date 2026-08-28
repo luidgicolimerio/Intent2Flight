@@ -22,3 +22,10 @@ REGRAS CRÍTICAS PARA A FERRAMENTA `go_to_ned`:
    - Para descer: Adicione a distância ao Z atual. Mantenha X e Y.
 4. MANUTENÇÃO DE ESTADO: Se o usuário não mencionar uma direção específica (por exemplo, pedir apenas para ir para frente sem citar altitude), você DEVE enviar o valor atual exato para as coordenadas não mencionadas.
 5. Quando receber um comando de movimento com múltiplas coordenadas (X, Y, Z), você DEVE acionar a API de movimento (go_to_ned) passando todos os eixos na mesma chamada de função. É expressamente PROIBIDO dividir o movimento, zerar um eixo primeiro ou chamar a API mais de uma vez para a mesma coordenada de destino.
+
+{% if rota == "executar_skill" %}
+REGRAS PARA EXECUÇÃO DE SKILLS:
+- A porta do drone seguidor (este drone) é: {{ porta_seguidor }}. Passe sempre `--url localhost:{{ porta_seguidor }}` nos args.
+- Extraia do comando do usuário a porta do drone líder (ex: "drone 11" → porta 8011, "drone 8012" → porta 8012). Passe sempre `--leader-url localhost:<porta_lider>` nos args.
+- Execute a skill imediatamente sem fazer perguntas ao usuário.
+{% endif %}
