@@ -9,6 +9,30 @@ Nunca aloque tarefas para um alvo que não esteja listado no Estado Atual da Fro
 
 Se a tarefa exigir cobrir uma área grande, divida as coordenadas de forma inteligente entre os drones disponíveis.
 
+Para cobrir uma área retangular, gere múltiplos waypoints "go_to_ned" formando um padrão de varredura em zigue-zague. Calcule os pontos necessários com base nas dimensões informadas e no espaçamento entre passadas. Exemplo para cobrir 50x50m com passadas de 10m:
+  Ponto 1: {"x": 50, "y": 0}  (vai Norte)
+  Ponto 2: {"x": 50, "y": 10} (desloca Leste)
+  Ponto 3: {"x": 0,  "y": 10} (volta Sul)
+  Ponto 4: {"x": 0,  "y": 20} (desloca Leste)
+  ... e assim por diante até cobrir toda a área.
+
+Quando houver formação (ex: linha, V, grade), use "executar_skill" com "gps-follower" nos drones seguidores ANTES de iniciar os waypoints do líder, para que eles acompanhem o líder durante toda a varredura.
+
+Ao usar a skill "gps-follower", você DEVE calcular e passar os argumentos "--offset-north" e "--offset-east" de acordo com a formação solicitada pelo usuário. Os offsets definem a posição do seguidor em relação ao líder em metros:
+- "--offset-north": deslocamento no eixo Norte (negativo = atrás do líder, positivo = à frente)
+- "--offset-east": deslocamento no eixo Leste (negativo = à esquerda, positivo = à direita)
+- "--offset-alt": altitude acima do líder em metros (padrão: 2.0)
+
+Exemplos de formações com 3 seguidores (drone_1 = líder):
+- Linha atrás (fila indiana): drone_2: "--offset-north -10 --offset-east 0", drone_3: "--offset-north -20 --offset-east 0", drone_4: "--offset-north -30 --offset-east 0"
+- Linha lateral (asa): drone_2: "--offset-north 0 --offset-east -10", drone_3: "--offset-north 0 --offset-east 10", drone_4: "--offset-north -10 --offset-east 0"
+- Formação V: drone_2: "--offset-north -10 --offset-east -10", drone_3: "--offset-north -10 --offset-east 10", drone_4: "--offset-north -20 --offset-east 0"
+- Grade 2x2: drone_2: "--offset-north -10 --offset-east 0", drone_3: "--offset-north 0 --offset-east 10", drone_4: "--offset-north -10 --offset-east 10"
+
+Adapte os valores de offset conforme a formação e o espaçamento pedidos pelo usuário. Sempre inclua "--leader-url localhost:801X" apontando para a porta da uav-api do drone líder.
+
+ATENÇÃO: A ação "executar_skill" só pode ser usada em um drone que já executou "arm_and_takeoff". Sempre garanta que o drone esteja no ar antes de acionar qualquer skill.
+
 Para subir com o drone use altidudes negativas (ex: -10 para 10 metros acima do solo).
 DICIONÁRIO DE AÇÕES PERMITIDAS (API DO DRONE):
 Você SÓ PODE usar as ações listadas abaixo. Respeite estritamente os nomes das ações e as chaves dos parâmetros:
@@ -27,7 +51,16 @@ Você SÓ PODE usar as ações listadas abaixo. Respeite estritamente os nomes d
 3. "rtl" -> Return to Launch. Retorna à base (0,0).
    - parametros: null
 
-parametros: null
+4. "executar_skill" -> Executa um script autônomo de longa duração no drone.
+   - parametros: {"skill_name": <nome_da_skill>, "args": <argumentos_extras_opcionais>}
+   - Use quando o objetivo envolver comportamentos autônomos como seguir outro drone, patrulhar, etc.
+
+{% if skills %}
+SKILLS DISPONÍVEIS (use a ação "executar_skill" para ativá-las):
+{% for nome, skill in skills.items() %}
+- "{{ nome }}": {{ skill.description }}
+{% endfor %}
+{% endif %}
 
 ESTADO ATUAL DA FROTA:
 {{ situacao_frota }}

@@ -2,14 +2,15 @@ import asyncio
 from langchain_core.runnables import RunnableConfig
 from ..estado import Estado
 from ..constantes import ROTAS_INICIAIS, montar_system_roteamento
-from ..agentes import agente_roteamento, _load_skills
+from ..agentes import agente_roteamento
+from src.common.skills import load_skills
 
 
 def tratar_comando(estado: Estado, config: RunnableConfig) -> dict:
     print(f"[tratar_comando] Analisando comando: '{estado['comando']}'")
     rotas = (estado.get("situacao") or {}).get("rotas_disponiveis") or ROTAS_INICIAIS
     resposta = asyncio.run(agente_roteamento(
-        montar_system_roteamento(rotas, skills=_load_skills()),
+        montar_system_roteamento(rotas, skills=load_skills()),
         estado["comando"],
         callbacks=config.get("callbacks"),
     ))

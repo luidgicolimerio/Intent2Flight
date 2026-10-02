@@ -7,10 +7,17 @@ import uuid
 _grafo_controle = construir_grafo_controle()
 
 FROTA_MCP_MAP = {
-    "drone_1": "http://localhost:8010/mcp",
-    "drone_2": "http://localhost:8011/mcp",
-    "drone_3": "http://localhost:8012/mcp",
-    "drone_4": "http://localhost:8013/mcp",
+    "drone_1": "http://localhost:8001/mcp",
+    "drone_2": "http://localhost:8002/mcp",
+    "drone_3": "http://localhost:8003/mcp",
+    "drone_4": "http://localhost:8004/mcp",
+}
+
+FROTA_API_MAP = {
+    "drone_1": "http://localhost:8011",
+    "drone_2": "http://localhost:8012",
+    "drone_3": "http://localhost:8013",
+    "drone_4": "http://localhost:8014",
 }
 
 async def operador(state: EstadoMissao, config: RunnableConfig) -> dict:
@@ -21,7 +28,8 @@ async def operador(state: EstadoMissao, config: RunnableConfig) -> dict:
     comando_ativo = fila[0]
 
     alvo = comando_ativo.get("alvo", "drone_1")
-    url_do_drone = FROTA_MCP_MAP.get(alvo, "http://localhost:8010/mcp")
+    url_do_drone = FROTA_MCP_MAP.get(alvo, "http://localhost:8011/mcp")
+    api_url = FROTA_API_MAP.get(alvo, "http://localhost:8001")
 
     instrucao = await agente_operador(comando_ativo)
     print(f"\n[Operador] Enviando para {alvo} ({url_do_drone}): {instrucao}")
@@ -36,7 +44,7 @@ async def operador(state: EstadoMissao, config: RunnableConfig) -> dict:
     }
 
     try:
-        await _grafo_controle.ainvoke({"comando": instrucao, "mcp_url": url_do_drone}, config=config_filho)
+        await _grafo_controle.ainvoke({"comando": instrucao, "mcp_url": url_do_drone, "api_url": api_url}, config=config_filho)
         return {"plano_de_voo": fila[1:], "comando_ativo": None}
     except Exception as e:
         print(f"[operador] Erro ao executar comando: {e}")
