@@ -13,4 +13,4 @@ load_dotenv()
 # llm = ChatOllama(model="llama3.1:8b", base_url="http://localhost:11434")
 
 
-llm = ChatOpenAI(model="gpt-4o-mini")
+llm = ChatOpenAI(model="gpt-6-luna", reasoning_effort="none")
