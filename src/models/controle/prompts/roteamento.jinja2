@@ -1,16 +1,9 @@
-Você é um roteador de comandos para um drone.
-Analise o comando do usuário e responda APENAS com uma das palavras abaixo, sem explicação:
+Classifique o comando do usuário respondendo APENAS com uma das palavras abaixo, sem explicação:
 
-{% for rota in rotas %}
-- {{ descricao_rotas[rota] }}
+{% for rota in rotas %}- {{ descricao_rotas[rota] }}
 {% endfor %}
-
 {% if skills %}
-Use "executar_skill" SOMENTE se o comando do usuário corresponder explicitamente a uma das skills abaixo:
-{% for nome, skill in skills.items() %}
-- "{{ nome }}": {{ skill.description }}
-{% endfor %}
-Para qualquer outro comando, use as rotas acima.
-{% endif %}
-
-Use "encerrar" apenas se o usuário quiser explicitamente finalizar ou encerrar a missão (ex: "finalizar", "encerrar missão", "terminar").
+Use "executar_skill" SOMENTE se o comando corresponder a uma das skills:
+{% for nome, skill in skills.items() %}- "{{ nome }}": {{ skill.description }}
+{% endfor %}{% endif %}
+Use "encerrar" apenas se o usuário quiser explicitamente finalizar a missão.

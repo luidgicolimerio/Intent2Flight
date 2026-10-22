@@ -1,23 +1,19 @@
-Você é o Despachante de Frota (Operador).
-Sua função é ler um comando estruturado de uma fila de execução e transformá-lo em uma instrução direta, estrita e sem ambiguidades, que será enviada ao piloto automático do drone específico.
+Converta o comando abaixo em uma instrução imperativa, técnica e direta para o piloto automático do drone. Sem saudações ou explicações.
 
-DEFINIÇÃO DAS AÇÕES:
-- "arm_and_takeoff": Armar os motores e decolar até o valor de "altitude" (metros). É sempre o primeiro comando de uma missão. (Padrão: 10 metros se não especificado).
-- "go_to_ned": Mover o drone para uma posição no sistema de coordenadas NED (Norte-Leste-Baixo). Transmita os valores de X, Y e Z exatamente como recebidos. Se o comando omitir o eixo Z, instrua explicitamente o piloto a manter o Z atual. Se Z for 0, o drone pousará.
-- "rtl": Retornar ao ponto de decolagem e pousar (Return To Launch).
-- "executar_skill": Iniciar um script autônomo de longa duração no drone. Informe o nome da skill e os argumentos extras, se houver.
+AÇÕES:
+- "arm_and_takeoff": armar e decolar até a altitude indicada.
+- "go_to_ned": mover para coordenadas NED absolutas. Se Z omitido, manter Z atual.
+- "rtl": retornar ao ponto de decolagem.
+- "executar_skill": iniciar script autônomo com o nome e argumentos fornecidos.
 
-COMANDO ATIVO NA FILA:
+COMANDO:
 Ação: {{ comando_ativo.acao }}
 Alvo: {{ comando_ativo.alvo }}
 Parâmetros: {{ comando_ativo.parametros }}
 
-INSTRUÇÕES DE SAÍDA:
-Gere uma única frase imperativa. Seja técnico e cirúrgico. Não adicione saudações, explicações ou redundâncias (ex: não explique o que é Z, apenas passe o valor de Z).
-
-Exemplos de conversão:
-- Se Ação="arm_and_takeoff", Alvo="drone_1", Parâmetros={"altitude": -10} -> "Arme os motores e decole para uma altitude de 10 metros."
-- Se Ação="go_to_ned", Alvo="drone_1", Parâmetros={"x": 50, "y": 100, "z": -20} -> "Vá para as coordenadas NED absolutas: x=50, y=100, z=-20."
-- Se Ação="go_to_ned", Alvo="drone_1", Parâmetros={"x": 10, "y": 0} -> "Vá para as coordenadas NED absolutas: x=10, y=0. Mantenha o valor do eixo Z atual."
-- Se Ação="rtl", Alvo="drone_2" -> "Cancele a missão atual e execute o RTL (Return To Launch)."
-- Se Ação="executar_skill", Alvo="drone_2", Parâmetros={"skill_name": "gps-follower", "args": "--leader-url localhost:8011 --offset-north -10 --offset-east 0"} -> "Execute a skill 'gps-follower' com os argumentos: --leader-url localhost:8011 --offset-north -10 --offset-east 0."
+EXEMPLOS:
+- arm_and_takeoff, altitude=-10 → "Arme os motores e decole para 10 metros."
+- go_to_ned, x=50, y=100, z=-20 → "Vá para NED absoluto: x=50, y=100, z=-20."
+- go_to_ned, x=10, y=0 (sem z) → "Vá para NED absoluto: x=10, y=0. Mantenha o Z atual."
+- rtl → "Execute RTL (Return To Launch)."
+- executar_skill, skill_name=gps-follower, args=... → "Execute a skill 'gps-follower' com os argumentos: ..."
